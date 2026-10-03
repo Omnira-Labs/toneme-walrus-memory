@@ -16,7 +16,7 @@ This repo shows how the memory layer works. The app, its prompts and its communi
 1. **Turn it on.** The user turns on Memory in Settings. The phone creates a random code (`memoryId`) and keeps it on the device.
 2. **Send a message.** The app sends the received message and the `memoryId` to the Toneme server.
 3. **Recall.** The server asks Walrus Memory for up to 5 relevant notes from that phone's own space, `toneme-<memoryId>`. If this takes more than 4 seconds, it continues without memory.
-4. **Reply.** The model (gpt-oss-120b) gets the message and the notes, and returns the suggested replies plus one short note, e.g. *"Nikos is accounting colleague; user writes briefly"*.
+4. **Reply.** The model (Llama 3.3 70B, open-weight; gpt-oss models as fallbacks) gets the message and the notes, and returns the suggested replies plus one short note, e.g. *"Nikos is accounting colleague; user writes briefly"*.
 5. **Remember.** The server saves that note to Walrus Memory in the background, so the user never waits. Notes are encrypted (Seal) and stored on Walrus mainnet.
 
 ## Design decisions
