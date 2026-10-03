@@ -98,3 +98,23 @@ export async function editMemory(env, ctx, memoryId, id, text) {
   const save = memoryClient(env, memoryId).remember(cleanNote(text)).catch(() => {});
   ctx?.waitUntil?.(save);
 }
+
+// Skip saving a note that adds nothing new to one we just recalled
+// (e.g. "Eleni is friend…" vs "Eleni is a friend…").
+const NOTE_STOPWORDS = new Set(['a', 'an', 'the', 'is', 'to', 'them', 'her', 'him', 'user', 'writes', 'and']);
+
+function noteTokens(text) {
+  return new Set(String(text).toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/)
+    .filter((w) => w && !NOTE_STOPWORDS.has(w)));
+}
+
+export function isNearDuplicate(note, recalled) {
+  const n = noteTokens(note);
+  if (!n.size) return false;
+  return (recalled || []).some((m) => {
+    const o = noteTokens(m);
+    let shared = 0;
+    for (const w of n) if (o.has(w)) shared++;
+    return shared === n.size || shared / (n.size + o.size - shared) >= 0.75;
+  });
+}
