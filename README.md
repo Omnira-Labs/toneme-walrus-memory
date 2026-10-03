@@ -54,4 +54,4 @@ npm install @mysten-incubation/memwal @mysten/sui @mysten/seal @mysten/walrus
 
 ## License
 
-© 2026 Omnira Labs. All rights reserved. Shared for review only (Walrus Sessions). No license is granted to copy, modify or use this code.
+© 2026 Omnira Labs. All rights reserved. You may view this code and run it locally to evaluate it (e.g. for Walrus Sessions judging). Any other use, copying or redistribution is not permitted.
