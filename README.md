@@ -50,7 +50,7 @@ npm install @mysten-incubation/memwal @mysten/sui @mysten/seal @mysten/walrus
 ## Feedback for the Walrus Memory team
 
 - **Bug / gap:** relayer rate-limit weights aren't documented, and there are no `X-RateLimit-*` headers. For a multi-user app on one account, quota can't be budgeted per user.
-- **Improvement:** a documented pattern (or API) for **per-end-user deletion** in multi-tenant apps. Today there is no way to delete one user's notes early (the dashboard only covers pre-migration data), so consumer apps can only hide notes until they expire.
+- **Improvement:** a way to permanently delete one user's notes before they expire. Today a consumer app can only hide them.
 
 ## License
 
