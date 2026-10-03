@@ -1,5 +1,5 @@
 // How the reply endpoint uses memory (simplified from Toneme).
-import { memoryEnabled, memoryQuotaOk, recallMemories, memoryPromptBlock, memoryClient, cleanNote } from '../src/memory.js';
+import { memoryEnabled, memoryQuotaOk, recallMemories, memoryPromptBlock, memoryClient, cleanNote, isNearDuplicate } from '../src/memory.js';
 
 export async function analyze(request, env, ctx, callModel) {
   const { message, memoryId } = await request.json();
@@ -17,7 +17,7 @@ export async function analyze(request, env, ctx, callModel) {
 
   // 3) Remember in the background so the user never waits on Walrus.
   const note = cleanNote(result.memory_note);
-  if (memories !== null && note) {
+  if (memories !== null && note && !isNearDuplicate(note, memories)) {
     ctx.waitUntil(memoryClient(env, memoryId).remember(note).catch(() => {}));
   }
 
