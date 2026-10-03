@@ -25,7 +25,7 @@ This repo shows how the memory layer works. The app, its prompts and its communi
 - **Opt-in and graceful.** Memory is off by default. Recall has a 4-second timeout, and any failure means "reply without memory", never "no reply".
 - **Small, safe notes.** The model writes at most one sentence per reply. Health, money, addresses, phone numbers and passwords are excluded by instruction.
 - **User control.** "My memory" lists notes, supports edit (hide old + remember new), multi-select remove, pagination, and "Forget everything" (new namespace).
-- **Honest deletion.** Walrus Memory has no per-end-user delete, so removed notes are hidden from every recall and list, stay encrypted, and expire with their storage.
+- **Honest deletion.** The relayer can delete a whole namespace (`/api/forget`), but the TypeScript SDK doesn't expose it yet. Until it does, removed notes are hidden from every recall and list, stay encrypted, and expire with their storage.
 - **Relayer limits.** The shared relayer is rate-limited, so each install has a daily cap (30 memory operations).
 
 ## Files
@@ -44,7 +44,7 @@ npm install @mysten-incubation/memwal @mysten/sui @mysten/seal @mysten/walrus
 ## Feedback for the Walrus Memory team
 
 - **Bug / gap:** relayer rate-limit weights aren't documented, and there are no `X-RateLimit-*` headers. For a multi-user app on one account, quota can't be budgeted per user.
-- **Improvement:** a way to permanently delete one user's notes before they expire. Today a consumer app can only hide them.
+- **Improvement:** expose `forget` (per namespace and per note) in the TypeScript SDK, so consumer apps can truly delete a user's notes instead of hiding them.
 
 ## License
 
