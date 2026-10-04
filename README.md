@@ -58,7 +58,7 @@ More example blobs (from removed notes), grouped by install (each install = one 
 | B | 15 | [1](https://walruscan.com/mainnet/blob/hmt0Ba9nKeS-QvfussvQ12HAaPjFn7i1Ru27z54JP5U) · [2](https://walruscan.com/mainnet/blob/nZGy9K6mpGdXYpxX_I3gjxP5yGSTTi91EmR3gCZcJBE) |
 | C | 4 | [1](https://walruscan.com/mainnet/blob/mN7KyeHIUv13jMP-tPL2XhqLhOQSn1RmyEcKsC3MHuw) |
 | D | 2 | [1](https://walruscan.com/mainnet/blob/Ek96-5Gt-nStAZtCsevq_tKUMngApqsZ27JlvIM-I5E) · [2](https://walruscan.com/mainnet/blob/5mgPgk6i6Wij7r4m65jMiPgRTCVAsxBBploWfjfpyhw) |
-| E | 11 (newest user, started Oct 4) | [1](https://walruscan.com/mainnet/blob/Qz-sA53O_WWPbuQ3M2m8krh8Tx8HKD7WWhVYOdWuLuo) |
+| E | 11 | [1](https://walruscan.com/mainnet/blob/Qz-sA53O_WWPbuQ3M2m8krh8Tx8HKD7WWhVYOdWuLuo) |
 
 MemWalAccount: https://suiscan.xyz/mainnet/object/0x2e3249aa0f1473e06788ed331c73e890b93cf86509a644c9f94c7e03f7984fca
 
