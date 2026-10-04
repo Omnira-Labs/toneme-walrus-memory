@@ -47,12 +47,15 @@ Each memory note is one Seal-encrypted blob on Walrus mainnet.
 
 Toneme has 3 real users on separate iPhones. So far there are 88 memory-backed requests in total; the two most active installs have 26 and 15.
 
-Example blobs from four different installs:
+Example blobs, grouped by install (each install = one phone's anonymous memory space; labels are ours, the explorer can't link a blob to a phone):
 
-- https://walruscan.com/mainnet/blob/ylZKYu8yLm-fADEKKF0Vl8LMoMLWm4Qz7rrCS8r9nsI
-- https://walruscan.com/mainnet/blob/hmt0Ba9nKeS-QvfussvQ12HAaPjFn7i1Ru27z54JP5U
-- https://walruscan.com/mainnet/blob/mN7KyeHIUv13jMP-tPL2XhqLhOQSn1RmyEcKsC3MHuw
-- https://walruscan.com/mainnet/blob/Ek96-5Gt-nStAZtCsevq_tKUMngApqsZ27JlvIM-I5E
+| Install | Memory-backed requests | Example blobs |
+|---|---|---|
+| A | 26 | [1](https://walruscan.com/mainnet/blob/ylZKYu8yLm-fADEKKF0Vl8LMoMLWm4Qz7rrCS8r9nsI) · [2](https://walruscan.com/mainnet/blob/FQUyPSAymy6V2piVm_Z7A0yyJlIW9TwBnXpRF1Dy9vw) · [3](https://walruscan.com/mainnet/blob/vivh49Q5644HjpM3NLHcZX-i5hnrXoPWWf7zY56Kgh0) |
+| B | 15 | [1](https://walruscan.com/mainnet/blob/hmt0Ba9nKeS-QvfussvQ12HAaPjFn7i1Ru27z54JP5U) · [2](https://walruscan.com/mainnet/blob/nZGy9K6mpGdXYpxX_I3gjxP5yGSTTi91EmR3gCZcJBE) |
+| C | 4 | [1](https://walruscan.com/mainnet/blob/mN7KyeHIUv13jMP-tPL2XhqLhOQSn1RmyEcKsC3MHuw) |
+| D | 2 | [1](https://walruscan.com/mainnet/blob/Ek96-5Gt-nStAZtCsevq_tKUMngApqsZ27JlvIM-I5E) · [2](https://walruscan.com/mainnet/blob/5mgPgk6i6Wij7r4m65jMiPgRTCVAsxBBploWfjfpyhw) |
+| E | 5 (newest user, started Oct 4) | not listed yet (we only keep ids of removed notes, and none are removed) |
 
 MemWalAccount: https://suiscan.xyz/mainnet/object/0x2e3249aa0f1473e06788ed331c73e890b93cf86509a644c9f94c7e03f7984fca
 
