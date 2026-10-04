@@ -41,6 +41,21 @@ npm install @mysten-incubation/memwal @mysten/sui @mysten/seal @mysten/walrus
 # secrets: MEMWAL_ACCOUNT_ID, MEMWAL_KEY (delegate key)
 ```
 
+## Proof on Walrus mainnet
+
+Each memory note is one Seal-encrypted blob on Walrus mainnet.
+
+Toneme has 3 real users on separate iPhones. So far there are 88 memory-backed requests in total; the two most active installs have 26 and 15.
+
+Example blobs from four different installs:
+
+- https://walruscan.com/mainnet/blob/ylZKYu8yLm-fADEKKF0Vl8LMoMLWm4Qz7rrCS8r9nsI
+- https://walruscan.com/mainnet/blob/hmt0Ba9nKeS-QvfussvQ12HAaPjFn7i1Ru27z54JP5U
+- https://walruscan.com/mainnet/blob/mN7KyeHIUv13jMP-tPL2XhqLhOQSn1RmyEcKsC3MHuw
+- https://walruscan.com/mainnet/blob/Ek96-5Gt-nStAZtCsevq_tKUMngApqsZ27JlvIM-I5E
+
+MemWalAccount: https://suiscan.xyz/mainnet/object/0x2e3249aa0f1473e06788ed331c73e890b93cf86509a644c9f94c7e03f7984fca
+
 ## Feedback for the Walrus Memory team
 
 - **Bug / gap:** relayer rate-limit weights aren't documented, and there are no `X-RateLimit-*` headers. For a multi-user app on one account, quota can't be budgeted per user.
