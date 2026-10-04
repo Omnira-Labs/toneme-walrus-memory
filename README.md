@@ -32,15 +32,32 @@ This repo shows how the memory layer works. The app, its prompts and its communi
 ## Files
 
 - `src/memory.js`: recall, remember, list, edit, hide, quota and prompt block.
+- `examples/demo.js`: runnable demo of the same pattern (one namespace per install, de-duplicated notes, recall).
 - `examples/analyze-with-memory.js`: how the reply endpoint uses it.
 
-## Setup
+## Run the demo
+
+Needs Node 20.6+ and your own Walrus Memory account (create one at https://memory.walrus.xyz/dashboard).
 
 ```bash
-npm install @mysten-incubation/memwal @mysten/sui @mysten/seal @mysten/walrus
-# Edge runtimes: enable Node.js compatibility
-# secrets: MEMWAL_ACCOUNT_ID, MEMWAL_KEY (delegate key)
+git clone https://github.com/Omnira-Labs/toneme-walrus-memory && cd toneme-walrus-memory
+npm install
+cp .env.example .env   # add MEMWAL_ACCOUNT_ID and MEMWAL_KEY (delegate key)
+npm run demo -- remember "Nikos is accounting colleague; user writes briefly"
+npm run demo -- recall "Nikos again. Any update on the report?"
 ```
+
+Each run uses a new random namespace, like a new install. Set `DEMO_MEMORY_ID` in `.env` to reuse one, so `recall` finds what `remember` saved (allow up to 30 seconds after saving). On edge runtimes such as Cloudflare Workers, enable Node.js compatibility.
+
+## Model and runtime
+
+Llama 3.3 70B (`llama-3.3-70b-versatile`, open-weight) served by Groq, called from a Cloudflare Worker. Fallbacks: `openai/gpt-oss-120b`, then `openai/gpt-oss-20b`, also on Groq.
+
+Friction we hit in this setup with Walrus Memory:
+
+- **Two rate limits stack.** Groq can return 429 under load, and the shared relayer is rate-limited too. Memory must never block a reply, so recall has a 4-second timeout, saving happens in the background, and a Groq 429 falls through to the fallback model.
+- **The model's note needs guarding.** Llama sometimes returned malformed notes ("colleague is colleague", "partner is romantic partner", empty relationship) or near-duplicates of a note it had just recalled. The server drops malformed notes and skips near-duplicates before calling `remember`, so bad notes never reach Walrus.
+- **Recall lag.** A note saved with `remember` can take about 15–30 seconds before `recall` returns it, so a reply sent right after may not see the newest note yet.
 
 ## Proof on Walrus mainnet
 
