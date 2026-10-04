@@ -86,4 +86,4 @@ Friction with Walrus Memory in this setup:
 
 ## License
 
-© 2026 Omnira Labs. All rights reserved. You may view this code and run it locally to evaluate it (e.g. for Walrus Sessions judging). Any other use, copying or redistribution is not permitted.
+MIT, see [LICENSE](LICENSE). This covers the memory layer in this repo only; the Toneme app is not included.
