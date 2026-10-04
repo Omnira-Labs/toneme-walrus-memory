@@ -46,7 +46,7 @@ npm install @mysten-incubation/memwal @mysten/sui @mysten/seal @mysten/walrus
 
 Each memory note is one Seal-encrypted blob on Walrus mainnet.
 
-Toneme has 3 real users on separate iPhones. So far there are 88 memory-backed requests in total; the two most active installs have 26 and 15.
+Toneme has 3 real users on separate iPhones, each with 10+ memory notes. So far there are 94 memory-backed requests in total; the three users' installs have 26, 15 and 11.
 
 In the app (v1.0.3), tap **View** under any note in My memory to see its blob ID, e.g. an active note: https://walruscan.com/mainnet/blob/HWehaD6jUGUMsBlD70_C9FL9ntaKi9BvZNIEqBLQ6nA
 
@@ -58,7 +58,7 @@ More example blobs (from removed notes), grouped by install (each install = one 
 | B | 15 | [1](https://walruscan.com/mainnet/blob/hmt0Ba9nKeS-QvfussvQ12HAaPjFn7i1Ru27z54JP5U) · [2](https://walruscan.com/mainnet/blob/nZGy9K6mpGdXYpxX_I3gjxP5yGSTTi91EmR3gCZcJBE) |
 | C | 4 | [1](https://walruscan.com/mainnet/blob/mN7KyeHIUv13jMP-tPL2XhqLhOQSn1RmyEcKsC3MHuw) |
 | D | 2 | [1](https://walruscan.com/mainnet/blob/Ek96-5Gt-nStAZtCsevq_tKUMngApqsZ27JlvIM-I5E) · [2](https://walruscan.com/mainnet/blob/5mgPgk6i6Wij7r4m65jMiPgRTCVAsxBBploWfjfpyhw) |
-| E | 5 (newest user, started Oct 4) | not listed yet (we only keep ids of removed notes, and none are removed) |
+| E | 11 (newest user, started Oct 4) | not listed yet (we only keep ids of removed notes, and none are removed) |
 
 MemWalAccount: https://suiscan.xyz/mainnet/object/0x2e3249aa0f1473e06788ed331c73e890b93cf86509a644c9f94c7e03f7984fca
 
