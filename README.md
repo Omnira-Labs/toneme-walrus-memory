@@ -1,75 +1,74 @@
 # Toneme × Walrus Memory
 
-**Toneme** is a live iOS app (App Store) that suggests replies to messages you receive. It now includes **Memory (beta)**: with your permission, Toneme remembers who people are to you and how you like to write to them, so the next reply sounds more like you. That memory is stored with **Walrus Memory** (MemWal) on Sui mainnet.
+Memory layer of **Toneme**, a live iOS reply coach on the App Store. With Memory on, Toneme remembers who each person is to the user and how the user writes to them, so the next reply fits. Notes are stored with **Walrus Memory** (MemWal) on Sui mainnet.
 
-This repo shows how the memory layer works. The app, its prompts and its communication rules are not included.
+This repo covers the memory layer only. The app, prompts and reply logic are not included.
 
-## What changes with memory
+## Before / after
 
 | Without memory | With memory |
 |---|---|
-| "Nikos again. Any update on the report?" → generic polite reply | Toneme recalls *"Nikos is accounting colleague; user writes briefly"* → a short, on-point reply in that style |
-| Every conversation starts from zero | Context carries over between sessions and app restarts |
+| "Nikos again. Any update on the report?" → generic polite reply | Recalls *"Nikos is accounting colleague; user writes briefly"* → short reply in that style |
+| Every conversation starts from zero | Context carries over across sessions and restarts |
 
 ## How it works
 
-1. **Turn it on.** The user turns on Memory in Settings. The phone creates a random code (`memoryId`) and keeps it on the device.
-2. **Send a message.** The app sends the received message and the `memoryId` to the Toneme server.
-3. **Recall.** The server asks Walrus Memory for up to 5 relevant notes from that phone's own space, `toneme-<memoryId>`. If this takes more than 4 seconds, it continues without memory.
-4. **Reply.** The model (Llama 3.3 70B, open-weight; gpt-oss models as fallbacks) gets the message and the notes, and returns the suggested replies plus one short note, e.g. *"Nikos is accounting colleague; user writes briefly"*.
-5. **Remember.** The server saves that note to Walrus Memory in the background, so the user never waits. Notes are encrypted (Seal) and stored on Walrus mainnet.
+1. **Opt in.** The user turns on Memory. The phone creates a random 32-hex `memoryId`.
+2. **Recall.** The server fetches up to 5 relevant notes from `toneme-<memoryId>`. Timeout: 4 s, then it replies without memory.
+3. **Reply.** The model gets the message plus notes and returns replies and one short note.
+4. **Remember.** The server saves the note in the background. Notes are Seal-encrypted blobs on Walrus mainnet.
 
-## Design decisions
+## Design
 
-- **No accounts, no wallet for end users.** One MemWal account and delegate key stay on the server. Each install gets a random 32-hex `memoryId` → its own namespace. The id is not linked to a person.
-- **Opt-in and graceful.** Memory is off by default. Recall has a 4-second timeout, and any failure means "reply without memory", never "no reply".
-- **Small, safe notes.** The model writes at most one sentence per reply. Health, money, addresses, phone numbers and passwords are excluded by instruction.
-- **User control.** "My memory" lists notes, supports edit (hide old + remember new), multi-select remove, pagination, and "Forget everything" (new namespace).
-- **Verifiable notes.** Under each note, "Stored on Walrus · View" shows its blob ID, with Copy and "Open in Walruscan", so anyone can check that the note is a real encrypted blob on mainnet.
-- **Honest deletion.** The relayer can delete a whole namespace (`/api/forget`), but the TypeScript SDK doesn't expose it yet. Until it does, removed notes are hidden from every recall and list, stay encrypted, and expire with their storage.
-- **Relayer limits.** The shared relayer is rate-limited, so each install has a daily cap (30 memory operations).
+- **No accounts, no wallets.** One MemWal account and delegate key on the server; one namespace per install. The id is not linked to a person.
+- **Graceful.** Memory is off by default. Any memory failure means "reply without memory", never "no reply".
+- **Safe notes.** One sentence per reply. No health, money, addresses, phone numbers or passwords.
+- **User control.** List, edit, multi-select remove, pagination, and "Forget everything" (new namespace).
+- **Verifiable.** Each note shows "Stored on Walrus · View": blob ID, Copy, Open in Walruscan.
+- **Honest deletion.** The relayer supports `/api/forget`, but the TypeScript SDK does not expose it yet. Removed notes are hidden from recall and list, stay encrypted, and expire with their storage.
+- **Quota.** The shared relayer is rate-limited, so each install has a daily cap of 30 memory operations.
 
 ## Files
 
-- `src/memory.js`: recall, remember, list, edit, hide, quota and prompt block.
-- `examples/demo.js`: runnable demo of the same pattern (one namespace per install, de-duplicated notes, recall).
-- `examples/analyze-with-memory.js`: how the reply endpoint uses it.
+| Path | Purpose |
+|---|---|
+| `src/memory.js` | recall, remember, list, edit, hide, quota, de-duplication |
+| `examples/demo.js` | runnable demo of the same pattern |
+| `examples/analyze-with-memory.js` | how the reply endpoint uses it |
 
 ## Run the demo
 
-Needs Node 20.6+ and your own Walrus Memory account (create one at https://memory.walrus.xyz/dashboard).
+Requires Node 20.6+ and your own Walrus Memory account ([dashboard](https://memory.walrus.xyz/dashboard)).
 
 ```bash
 git clone https://github.com/Omnira-Labs/toneme-walrus-memory && cd toneme-walrus-memory
 npm install
-cp .env.example .env   # add MEMWAL_ACCOUNT_ID and MEMWAL_KEY (delegate key)
+cp .env.example .env   # fill in your own MEMWAL_ACCOUNT_ID and MEMWAL_KEY
 npm run demo -- remember "Nikos is accounting colleague; user writes briefly"
 npm run demo -- recall "Nikos again. Any update on the report?"
 ```
 
-Each run uses a new random namespace, like a new install. Set `DEMO_MEMORY_ID` in `.env` to reuse one, so `recall` finds what `remember` saved (allow up to 30 seconds after saving). On edge runtimes such as Cloudflare Workers, enable Node.js compatibility.
+Each run uses a new namespace, like a new install. Set `DEMO_MEMORY_ID` to reuse one. Allow up to 30 s between `remember` and `recall`.
 
 ## Model and runtime
 
-Llama 3.3 70B (`llama-3.3-70b-versatile`, open-weight) served by Groq, called from a Cloudflare Worker. Fallbacks: `openai/gpt-oss-120b`, then `openai/gpt-oss-20b`, also on Groq.
+**Llama 3.3 70B** (`llama-3.3-70b-versatile`, open-weight) on **Groq**. Fallbacks: `openai/gpt-oss-120b`, then `openai/gpt-oss-20b`, also on Groq.
 
-Friction we hit in this setup with Walrus Memory:
+Friction with Walrus Memory in this setup:
 
-- **Two rate limits stack.** Groq can return 429 under load, and the shared relayer is rate-limited too. Memory must never block a reply, so recall has a 4-second timeout, saving happens in the background, and a Groq 429 falls through to the fallback model.
-- **The model's note needs guarding.** Llama sometimes returned malformed notes ("colleague is colleague", "partner is romantic partner", empty relationship) or near-duplicates of a note it had just recalled. The server drops malformed notes and skips near-duplicates before calling `remember`, so bad notes never reach Walrus.
-- **Recall lag.** A note saved with `remember` can take about 15–30 seconds before `recall` returns it, so a reply sent right after may not see the newest note yet.
+- **Stacked rate limits.** Groq can return 429, and the relayer is rate-limited too. Fix: 4 s recall timeout, background saves, model fallback on 429.
+- **Model notes need guarding.** Llama sometimes produced malformed notes ("colleague is colleague", "partner is romantic partner") or near-duplicates. Fix: the server drops them before `remember`.
+- **Recall lag.** A new note can take ~15–30 s to become recallable.
 
 ## Proof on Walrus mainnet
 
-Each memory note is one Seal-encrypted blob on Walrus mainnet.
+**Usage:** 3 real users on separate iPhones, 10+ notes each, 94 memory-backed requests.
 
-Toneme has 3 real users on separate iPhones, each with 10+ memory notes. So far there are 94 memory-backed requests in total; the three users' installs have 26, 15 and 11.
+**Verify in the app (v1.0.3):** My memory → View under any note → blob ID, Copy, Open in Walruscan. Example active note: [HWehaD6j…](https://walruscan.com/mainnet/blob/HWehaD6jUGUMsBlD70_C9FL9ntaKi9BvZNIEqBLQ6nA)
 
-In the app (v1.0.3), tap **View** under any note in My memory to see its blob ID, e.g. an active note: https://walruscan.com/mainnet/blob/HWehaD6jUGUMsBlD70_C9FL9ntaKi9BvZNIEqBLQ6nA
+**Example blobs by install** (one install = one phone):
 
-More example blobs, by install (one install = one phone):
-
-| Install | Memory-backed requests | Example blobs |
+| Install | Requests | Blobs |
 |---|---|---|
 | A | 26 | [1](https://walruscan.com/mainnet/blob/ylZKYu8yLm-fADEKKF0Vl8LMoMLWm4Qz7rrCS8r9nsI) · [2](https://walruscan.com/mainnet/blob/FQUyPSAymy6V2piVm_Z7A0yyJlIW9TwBnXpRF1Dy9vw) · [3](https://walruscan.com/mainnet/blob/vivh49Q5644HjpM3NLHcZX-i5hnrXoPWWf7zY56Kgh0) |
 | B | 15 | [1](https://walruscan.com/mainnet/blob/hmt0Ba9nKeS-QvfussvQ12HAaPjFn7i1Ru27z54JP5U) · [2](https://walruscan.com/mainnet/blob/nZGy9K6mpGdXYpxX_I3gjxP5yGSTTi91EmR3gCZcJBE) |
@@ -77,12 +76,12 @@ More example blobs, by install (one install = one phone):
 | D | 2 | [1](https://walruscan.com/mainnet/blob/Ek96-5Gt-nStAZtCsevq_tKUMngApqsZ27JlvIM-I5E) · [2](https://walruscan.com/mainnet/blob/5mgPgk6i6Wij7r4m65jMiPgRTCVAsxBBploWfjfpyhw) |
 | E | 11 | [1](https://walruscan.com/mainnet/blob/Qz-sA53O_WWPbuQ3M2m8krh8Tx8HKD7WWhVYOdWuLuo) |
 
-MemWalAccount: https://suiscan.xyz/mainnet/object/0x2e3249aa0f1473e06788ed331c73e890b93cf86509a644c9f94c7e03f7984fca
+**Account:** [MemWalAccount on Suiscan](https://suiscan.xyz/mainnet/object/0x2e3249aa0f1473e06788ed331c73e890b93cf86509a644c9f94c7e03f7984fca)
 
 ## Feedback for the Walrus Memory team
 
-- **Bug / gap:** relayer rate-limit weights aren't documented, and there are no `X-RateLimit-*` headers. For a multi-user app on one account, quota can't be budgeted per user.
-- **Improvement:** expose `forget` (per namespace and per note) in the TypeScript SDK, so consumer apps can truly delete a user's notes instead of hiding them.
+- **Gap:** relayer rate-limit weights are undocumented and responses have no `X-RateLimit-*` headers, so per-user quota can't be budgeted in a multi-user app.
+- **Improvement:** expose `forget` (per namespace and per note) in the TypeScript SDK, so apps can truly delete a user's notes instead of hiding them.
 
 ## License
 
