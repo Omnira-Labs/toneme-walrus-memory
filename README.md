@@ -25,6 +25,7 @@ This repo shows how the memory layer works. The app, its prompts and its communi
 - **Opt-in and graceful.** Memory is off by default. Recall has a 4-second timeout, and any failure means "reply without memory", never "no reply".
 - **Small, safe notes.** The model writes at most one sentence per reply. Health, money, addresses, phone numbers and passwords are excluded by instruction.
 - **User control.** "My memory" lists notes, supports edit (hide old + remember new), multi-select remove, pagination, and "Forget everything" (new namespace).
+- **Verifiable notes.** Under each note, "Stored on Walrus · View" shows its blob ID, with Copy and "Open in Walruscan", so anyone can check that the note is a real encrypted blob on mainnet.
 - **Honest deletion.** The relayer can delete a whole namespace (`/api/forget`), but the TypeScript SDK doesn't expose it yet. Until it does, removed notes are hidden from every recall and list, stay encrypted, and expire with their storage.
 - **Relayer limits.** The shared relayer is rate-limited, so each install has a daily cap (30 memory operations).
 
@@ -47,7 +48,9 @@ Each memory note is one Seal-encrypted blob on Walrus mainnet.
 
 Toneme has 3 real users on separate iPhones. So far there are 88 memory-backed requests in total; the two most active installs have 26 and 15.
 
-Example blobs, grouped by install (each install = one phone's anonymous memory space; labels are ours, the explorer can't link a blob to a phone):
+In the app (v1.0.3), tap **View** under any note in My memory to see its blob ID, e.g. an active note: https://walruscan.com/mainnet/blob/HWehaD6jUGUMsBlD70_C9FL9ntaKi9BvZNIEqBLQ6nA
+
+More example blobs (from removed notes), grouped by install (each install = one phone's anonymous memory space; labels are ours, the explorer can't link a blob to a phone):
 
 | Install | Memory-backed requests | Example blobs |
 |---|---|---|
