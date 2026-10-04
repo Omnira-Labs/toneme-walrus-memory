@@ -82,6 +82,7 @@ Friction with Walrus Memory in this setup:
 
 - **Gap:** relayer rate-limit weights are undocumented and responses have no `X-RateLimit-*` headers, so per-user quota can't be budgeted in a multi-user app.
 - **Improvement:** expose `forget` (per namespace and per note) in the TypeScript SDK, so apps can truly delete a user's notes instead of hiding them.
+- **Bug report:** [MystenLabs/MemWal#1103](https://github.com/MystenLabs/MemWal/issues/1103), `recall({ sort: "recent", maxTokens })` drops the most relevant hits.
 
 ## License
 
