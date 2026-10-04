@@ -50,7 +50,7 @@ Toneme has 3 real users on separate iPhones, each with 10+ memory notes. So far 
 
 In the app (v1.0.3), tap **View** under any note in My memory to see its blob ID, e.g. an active note: https://walruscan.com/mainnet/blob/HWehaD6jUGUMsBlD70_C9FL9ntaKi9BvZNIEqBLQ6nA
 
-More example blobs (from removed notes), grouped by install (each install = one phone's anonymous memory space; labels are ours, the explorer can't link a blob to a phone):
+More example blobs, by install (one install = one phone):
 
 | Install | Memory-backed requests | Example blobs |
 |---|---|---|
