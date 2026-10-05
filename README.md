@@ -1,6 +1,6 @@
 # Toneme × Walrus Memory
 
-Memory layer of **Toneme**, a live iOS reply coach on the App Store. With Memory on, Toneme remembers who each person is to the user and how the user writes to them, so the next reply fits. Notes are stored with **Walrus Memory** (MemWal) on Sui mainnet.
+Memory layer of **Toneme**, a live iOS reply coach on the [App Store](https://apps.apple.com/app/id6802259576). With Memory on, Toneme remembers who each person is to the user and how the user writes to them, so the next reply fits. Notes are stored with **Walrus Memory** (MemWal) on Sui mainnet.
 
 This repo covers the memory layer only. The app, prompts and reply logic are not included.
 
