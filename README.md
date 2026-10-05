@@ -64,6 +64,8 @@ Friction with Walrus Memory in this setup:
 
 **Usage:** 3 real users on separate iPhones, 10+ notes each, 94 memory-backed requests.
 
+**Demo video:** [Toneme remembers who you're texting](https://www.youtube.com/watch?v=z-2GmgjDBEo)
+
 **Verify in the app (v1.0.3):** My memory → View under any note → blob ID, Copy, Open in Walruscan. Example active note: [HWehaD6j…](https://walruscan.com/mainnet/blob/HWehaD6jUGUMsBlD70_C9FL9ntaKi9BvZNIEqBLQ6nA)
 
 **Example blobs by install** (one install = one phone):
