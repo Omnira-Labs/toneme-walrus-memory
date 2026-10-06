@@ -1,5 +1,7 @@
 # Toneme × Walrus Memory
 
+**Article:** [My reply coach finally remembers who I'm talking to](https://medium.com/@toneme.app/my-reply-coach-finally-remembers-who-im-talking-to-f3c5f8773a51) · Built for Walrus Session 8: Chatbots That Remember
+
 Memory layer of **Toneme**, a live iOS reply coach on the [App Store](https://apps.apple.com/app/id6802259576). With Memory on, Toneme remembers who each person is to the user and how the user writes to them, so the next reply fits. Notes are stored with **Walrus Memory** (MemWal) on Sui mainnet.
 
 This repo covers the memory layer only. The app, prompts and reply logic are not included.
