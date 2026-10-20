@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "demo": "node --env-file=.env examples/demo.js"
+    "demo": "node --env-file=.env examples/demo.js",
+    "test": "node --test test/"
   },
   "engines": {
     "node": ">=20.6"
