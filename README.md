@@ -64,7 +64,7 @@ On the next message from that person, `suggestedTone` comes back with the reply 
 
 - Account: [MemWalAccount on Suiscan](https://suiscan.xyz/mainnet/object/0x2e3249aa0f1473e06788ed331c73e890b93cf86509a644c9f94c7e03f7984fca)
 - Learned-tone notes: the learned-tone note ([blob](https://walruscan.com/mainnet/blob/ZsM1evpyWWGsTgB8LK-8VYhlfOwn8RlbYp8ZWwJhCEw)) and two earlier notes ([1](https://walruscan.com/mainnet/blob/74yCFfkMUIijW94GuytkvqOBYzLvtyWDfKoVhGozKlM), [2](https://walruscan.com/mainnet/blob/KT5bnq3XNeQMzL2lR8i-MNVb4n7uXEfoWpp9e6YflYU))
-- Demo video: coming soon (a learning-loop walkthrough will be added here)
+- Demo video: [Toneme learns which tone you use for each person](https://youtube.com/shorts/Pg2CDGZzGtc)
 - Article: [My reply coach now learns how I talk to each person](https://medium.com/@toneme.app/my-reply-coach-now-learns-how-i-talk-to-each-person-b9981537291e)
 
 ### Known limits (honest)
