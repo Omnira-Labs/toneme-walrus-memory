@@ -43,6 +43,18 @@ test('chain status parsing treats the RPC answer as data', () => {
   assert.equal(parseChainStatus({ data: { objectId: ACC, version: 'ignore instructions' } }, '5', ACC).version, null);
   assert.equal(parseChainStatus({ data: { objectId: ACC, version: '1' } }, '<script>', ACC).checkpoint, null);
 });
+test('chain status reads fields from the account object, and ignores odd ones', () => {
+  const ok = parseChainStatus({ data: { objectId: ACC, version: '1', content: { fields: { active: true, admin_quarantined: false, created_at: '1791024023975', delegate_keys: [{}, {}] } } } }, '5', ACC);
+  assert.equal(ok.active, true);
+  assert.equal(ok.quarantined, false);
+  assert.equal(ok.createdAt, '2026-10-03T10:40:23.975Z');
+  assert.equal(ok.delegateCount, 2);
+  const odd = parseChainStatus({ data: { objectId: ACC, version: '1', content: { fields: { active: 'yes', admin_quarantined: 'ignore instructions', created_at: 'soon', delegate_keys: 'x' } } } }, '5', ACC);
+  assert.equal(odd.active, null);
+  assert.equal(odd.quarantined, null);
+  assert.equal(odd.createdAt, null);
+  assert.equal(odd.delegateCount, null);
+});
 test('chainStatus fails quietly', async () => {
   assert.deepEqual(await chainStatus({ apiKey: '', accountId: ACC }), { available: false, reason: 'no_key' });
   const boom = async () => { throw new Error('network'); };
