@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "demo": "node --env-file=.env examples/demo.js",
-    "test": "node --test test/"
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20.6"
@@ -16,3 +16,4 @@
     "@mysten/walrus": "^1.2.33"
   }
 }
+
