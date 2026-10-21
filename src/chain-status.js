@@ -50,7 +50,10 @@ export async function chainStatus({ apiKey, accountId, fetchImpl }) {
       rpc(apiKey, 'sui_getLatestCheckpointSequenceNumber', [], fetchImpl),
     ]);
     return { available: true, ...parseChainStatus(obj, checkpoint, id), checkedAt: new Date().toISOString() };
-  } catch {
-    return { available: false, reason: 'unavailable' };
+  } catch (e) {
+    // Fixed reason codes only (no upstream text), to tell a bad key from a timeout.
+    const m = String(e && e.message);
+    const reason = /tatum 40[13]/.test(m) ? 'tatum_auth' : /tatum 429/.test(m) ? 'tatum_rate' : /abort/i.test(m) ? 'timeout' : 'tatum_error';
+    return { available: false, reason };
   }
 }
