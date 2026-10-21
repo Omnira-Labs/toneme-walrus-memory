@@ -3,15 +3,29 @@
 // derived by code, never by the model.
 
 export const VALID_TONES = ['warm', 'confident', 'short', 'professional', 'factual', 'flirty'];
-export const CHOICE_MIN_PICKS = 3; // "usually" must be true: at least 3 copies of one tone
+export const CHOICE_MIN_PICKS = 3; // "usually" must be true: at least 3 picks of one tone
 
 const NAME_RE = /^\p{L}[\p{L}-]{1,19}$/u;
 const CHOICE_NOTE_RE = /^(\p{L}[\p{L}-]{1,19}): user usually picks the (warm|confident|short|professional|factual|flirty) tone$/u;
 
-// Same spirit as the filters on every other note: no contact details or amounts,
-// and no text that tells the model to do something.
-const PRIVATE_RE = /[€$£]\s?\d|\d\s?(?:€|\$|£|eur\b|euros?\b|usd\b)|[^\s@]+@[^\s@]+\.[a-z]{2,}|\bhttps?:\/\/|\bwww\.|\b[a-z0-9-]+\.(?:com|gr|net|org|io|app|me)\b|\+?\d(?:[\s().-]?\d){7,}/i;
-const INSTRUCTION_RE = /\b(always|never|ignore|disregard|forget|override|bypass|from now on|you must|you should|you are|do not|reply with|respond with|pretend|act as|system|instruction|prompt|jailbreak|developer|admin|promise|promises|agree|agrees|approve|approved|owe|owes|pay|pays|transfer|permission)\b/i;
+// The same filters the production server applies to every note: no amounts, contact
+// details or identifiers, and no text that tells the model to do something.
+const PRIVATE_PATTERNS = [
+  /[€$£]\s?\d|\d\s?(?:€|\$|£|eur\b|euros?\b|usd\b|dollars?\b|ευρώ)/i, // amounts of money
+  /[^\s@]+@[^\s@]+\.[a-z]{2,}/i,                                      // email
+  /\bhttps?:\/\/|\bwww\.|\b[a-z0-9-]+\.(com|gr|net|org|io|app|me)\b/i, // link
+  /\+?\d(?:[\s().-]?\d){7,}/,                                         // phone or long number (IBAN, ID, card)
+  /\b[A-Z]{2}\d{2}[A-Z0-9]{10,}\b/,                                   // IBAN without spaces
+  /\b[A-ZΑ-Ω]{1,2}\s?\d{6}\b/,                                        // ID card number
+];
+const INSTRUCTION_RE = new RegExp([
+  String.raw`\b(always|never|ignore|disregard|forget|override|bypass|from now on|you must|you should|you are|do not|don't|must always|reply with|respond with|answer with|say that|pretend|act as|system|instruction|instructions|prompt|jailbreak|developer|admin)\b`,
+  // Commitments phrased as a "fact about the person": a message cannot make the user
+  // promise, approve, owe or pay something by hiding it in a remembered note.
+  String.raw`\b(tell|ask|include|append|mention|promise|promises|agree|agrees|approve|approved|confirm|confirmed|owe|owes|pay|pays|transfer|permission|authori[sz]ed?|consent)\b`,
+  String.raw`(πάντα|ποτέ|αγνόησε|ξέχασε|από εδώ και πέρα|πρέπει να|μην |οδηγία|οδηγίες|απάντα με|υποκρίσου|σύστημα|υπόσχεται|συμφωνεί|εγκρίνει|χρωστάει|πληρώνει|άδεια)`,
+].join('|'), 'i');
+const isPrivate = (text) => PRIVATE_PATTERNS.some((re) => re.test(text));
 
 export function senderNameFromNote(note) {
   const m = /^(\p{L}[\p{L}-]{1,19}) is /u.exec(String(note || ''));
@@ -21,7 +35,7 @@ export function senderNameFromNote(note) {
 export function buildChoiceNote(name, tone) {
   if (!NAME_RE.test(String(name)) || !VALID_TONES.includes(tone)) return null;
   const note = `${name}: user usually picks the ${tone} tone`;
-  return PRIVATE_RE.test(note) || INSTRUCTION_RE.test(note) ? null : note;
+  return isPrivate(note) || INSTRUCTION_RE.test(note) ? null : note;
 }
 
 // Returns a tone only when exactly one recalled choice note matches a name in the
