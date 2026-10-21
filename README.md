@@ -57,7 +57,7 @@ On the next message from that person, `suggestedTone` comes back with the reply 
 `src/chain-status.js` asks Tatum's Sui mainnet gateway (`sui-mainnet.gateway.tatum.io`, `sui_getObject` and `sui_getLatestCheckpointSequenceNumber`) whether the MemWal account object exists, is active and is not quarantined. The app shows "✓ Memory verified · View proof" (Suiscan link).
 
 - Verifies the **account** that owns the notes, not each note (Walrus blob IDs are not Sui objects).
-- Cached 5 minutes, 4 s timeout, returns `{ available: false }` on any failure. Never blocks a reply.
+- Cached 5 minutes, 4 s timeout, returns `{ available: false, reason }` on any failure (`no_key`, `tatum_auth`, `tatum_rate`, `timeout`, `tatum_error`: fixed codes, never upstream text). Never blocks a reply.
 - The RPC answer is treated as data: fixed parsing (object id must match, digits-only version and checkpoint).
 
 ### 3. Proof
@@ -97,6 +97,16 @@ npm run demo -- recall "Nikos again. Any update on the report?"
 ```
 
 Each run uses a new namespace, like a new install. Set `DEMO_MEMORY_ID` to reuse one. Allow up to 30 s between `remember` and `recall`.
+
+## Run the tests
+
+No account or keys needed (the Tatum calls are replaced by a fake `fetch`).
+
+```bash
+npm test
+```
+
+11 tests cover the note template, name and tone validation, planted and conflicting notes, the 3-pick rule, and the chain-status parsing and failure codes.
 
 ## Model and runtime
 
