@@ -20,16 +20,23 @@ async function rpc(apiKey, method, params, fetchImpl = fetch) {
   } finally { clearTimeout(timer); }
 }
 
-// The RPC answer is data: fixed parsing, digits-only version and checkpoint.
+// The RPC answer is data: fixed parsing, digits-only version and checkpoint, and from the
+// account object only booleans, a date and a count (no free text is ever passed on).
 export function parseChainStatus(obj, checkpoint, accountId) {
   const d = obj && obj.data;
   const exists = !!(d && typeof d.objectId === 'string' && d.objectId.toLowerCase() === String(accountId).toLowerCase());
+  const f = (exists && d.content && d.content.fields) || {};
+  const ms = /^\d{10,14}$/.test(String(f.created_at)) ? Number(f.created_at) : null;
   return {
     network: 'sui-mainnet',
     accountId: String(accountId),
     exists,
     version: exists && /^\d{1,20}$/.test(String(d.version)) ? String(d.version) : null,
     checkpoint: /^\d{1,20}$/.test(String(checkpoint)) ? String(checkpoint) : null,
+    active: exists && typeof f.active === 'boolean' ? f.active : null,
+    quarantined: exists && typeof f.admin_quarantined === 'boolean' ? f.admin_quarantined : null,
+    createdAt: ms ? new Date(ms).toISOString() : null,
+    delegateCount: exists && Array.isArray(f.delegate_keys) ? Math.min(f.delegate_keys.length, 99) : null,
   };
 }
 
@@ -39,7 +46,7 @@ export async function chainStatus({ apiKey, accountId, fetchImpl }) {
   try {
     const id = String(accountId).trim();
     const [obj, checkpoint] = await Promise.all([
-      rpc(apiKey, 'sui_getObject', [id, { showType: false, showOwner: false }], fetchImpl),
+      rpc(apiKey, 'sui_getObject', [id, { showContent: true }], fetchImpl),
       rpc(apiKey, 'sui_getLatestCheckpointSequenceNumber', [], fetchImpl),
     ]);
     return { available: true, ...parseChainStatus(obj, checkpoint, id), checkedAt: new Date().toISOString() };
